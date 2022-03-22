@@ -3,45 +3,84 @@ using Raylib_cs;
 using System.Collections.Generic;
 using System.Numerics;
 
-Raylib.InitWindow(1000, 1000, "Slutprojekt");
+Raylib.InitWindow(800, 800, "Slutprojekt");
+Raylib.SetTargetFPS(60);
 
-Rectangle playerRect = new Rectangle(0, 1000 - 60, 53, 60);
-Vector2 playerVector = new Vector2(40,40);
+Rectangle floor = new Rectangle(200, 700, 200, 30);
+Vector2 playerVector = new Vector2(40, 700);
 Texture2D playerTexture = Raylib.LoadTexture("aniFront.png");
-Texture2D playerTexture2 = Raylib.LoadTexture("aniLeft.png");
-Texture2D playerTexture3 = Raylib.LoadTexture("aniRight.png");
 
-Rectangle textureCutter = new Rectangle(0,0,40, playerTexture.height);
+Texture2D[] playerDirection = {
+    Raylib.LoadTexture("aniFront.png"),
+    Raylib.LoadTexture("aniRight.png"),
+    Raylib.LoadTexture("aniLeft.png"),
+    };
 
+Rectangle textureCutter = new Rectangle(0, 0, 50, playerTexture.height);
+
+bool inAir = false;
+float gravity = 0;
+float speedY = 8.2f;
+float speedX = 3.6f;
+float timer = 0.0f;
 int currentFrame = 0;
-int totalFrames = (int) playerTexture.width / (int) textureCutter.width;
-bool leftOrRight = false;
+int totalFrames = (int)playerTexture.width / (int)textureCutter.width;
 
 
-Raylib.SetTargetFPS(30);
-
-while(!Raylib.WindowShouldClose()){
-
-Raylib.BeginDrawing();
-
-Raylib.ClearBackground(Color.SKYBLUE);
-
-textureCutter.x = currentFrame * textureCutter.width;
-if(!leftOrRight)Raylib.DrawTextureRec(playerTexture, textureCutter, playerVector, Color.WHITE);
-currentFrame++;
-if (currentFrame > totalFrames) currentFrame = 0;
-
-if(Raylib.IsKeyDown(KeyboardKey.KEY_A) || Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)){ playerVector.X -= 10; Raylib.DrawTextureRec(playerTexture2, textureCutter, playerVector, Color.WHITE); leftOrRight = true;}
-if(Raylib.IsKeyReleased(KeyboardKey.KEY_A)) leftOrRight = false;
-if(Raylib.IsKeyDown(KeyboardKey.KEY_D) || Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)){ playerVector.X += 10; Raylib.DrawTextureRec(playerTexture3, textureCutter, playerVector, Color.WHITE); leftOrRight = true;}
-if(Raylib.IsKeyReleased(KeyboardKey.KEY_D)) leftOrRight = false;
-if(Raylib.IsKeyDown(KeyboardKey.KEY_W) || Raylib.IsKeyDown(KeyboardKey.KEY_UP)) playerVector.Y -= 10;
-if(Raylib.IsKeyDown(KeyboardKey.KEY_S) || Raylib.IsKeyDown(KeyboardKey.KEY_DOWN)) playerVector.Y += 10;
+while (!Raylib.WindowShouldClose())
+{
+    timer += Raylib.GetFrameTime();
+    if (timer >= 0.1f)
+    {
+        timer = 0.0f;
+        currentFrame++;
+    }
+    if (currentFrame > totalFrames) currentFrame = 0;
 
 
- //Raylib.DrawTexture(playerTexture, (int)playerRect.x, (int)playerRect.y, Color.WHITE);
+    textureCutter.x = currentFrame * textureCutter.width;
 
-Raylib.EndDrawing();
+
+
+    playerVector.Y += gravity;
+    gravity += 0.3f;
+
+    if (playerVector.Y + playerTexture.height > Raylib.GetScreenHeight())
+    {
+        gravity = 0;
+        inAir = false;
+    }
+
+
+    if (playerVector.X <= 0)
+    {
+        playerVector.X = 0;
+    }
+
+
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_SPACE) && !inAir)
+    {
+        inAir = true;
+    }
+
+    if (inAir == true)
+    {
+        playerVector.Y -= speedY;
+    }
+
+    Raylib.BeginDrawing();
+
+    Raylib.ClearBackground(Color.SKYBLUE);
+
+    Raylib.DrawTextureRec(playerTexture, textureCutter, playerVector, Color.WHITE);
+    Raylib.DrawRectangleRec(floor, Color.BLACK);
+
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_A) || Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) { playerVector.X -= speedX; playerTexture = playerDirection[2]; }
+    if (Raylib.IsKeyReleased(KeyboardKey.KEY_A) || Raylib.IsKeyReleased(KeyboardKey.KEY_LEFT)) playerTexture = playerDirection[0];
+    if (Raylib.IsKeyDown(KeyboardKey.KEY_D) || Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) { playerVector.X += speedX; playerTexture = playerDirection[1]; }
+    if (Raylib.IsKeyReleased(KeyboardKey.KEY_D) || Raylib.IsKeyReleased(KeyboardKey.KEY_RIGHT)) playerTexture = playerDirection[0];
+
+    Raylib.EndDrawing();
+
 
 }
-
