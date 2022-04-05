@@ -20,15 +20,15 @@ while (!Raylib.WindowShouldClose())
     Raylib.ClearBackground(Color.SKYBLUE);
 
     Raylib.DrawTextureRec(Main.playerTexture, Main.textureCutter, player.aniVector, Color.WHITE);
-    Raylib.DrawRectangleRec(player.playerRect, Color.WHITE);
+    //Raylib.DrawRectangleRec(player.playerRect, Color.WHITE);
 
     Raylib.EndDrawing();
 }
-
 
 void loadObjects()
 {
     player.Anim();
     player.Movement(Main.playerTexture);
-    player.playerCollision(platform);
+    player.Collision(platform);
+    player.Attack();
 }
