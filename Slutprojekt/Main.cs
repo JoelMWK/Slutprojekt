@@ -15,8 +15,8 @@ public class Main
     Rectangle lostHealthRect = new Rectangle(180, 10, 0, 13);
     Texture2D healthBar = Raylib.LoadTexture("healthbar.png");
 
-    public Rectangle enemyRect = new Rectangle(600, 700, 50, 75);
 
+    Rectangle bullet = new Rectangle(0, 0, 40, 6);
     public static Texture2D groundTexture = Raylib.LoadTexture("floor.png");
 
 
@@ -34,21 +34,21 @@ public class Main
 
     public static int ground = Raylib.GetScreenHeight() - groundTexture.height;
     bool inAir = false;
-    float gravity = 0;
+    public float gravity = 0;
     float speedY = 8.2f;
     float speedX = 4.2f;
     int hp = 10;
+    public int enemyHp = 10;
     double damageImmune = 0;
     float timer = 0.0f;
     int currentFrame = 0;
     int totalFrames = (int)playerTexture.width / (int)textureCutter.width;
 
-    int height = playerTexture.height;
-    int width = playerTexture.width;
+    public static int height = playerTexture.height;
+    public static int width = playerTexture.width;
 
     bool right = false;
     bool left = false;
-    string hitDirection = "";
 
     public void Anim()
     {
@@ -63,9 +63,9 @@ public class Main
         textureCutter.x = currentFrame * textureCutter.width;
 
         //Change texture on walk
-        if (right == true) { playerTexture = playerDirection[1]; hitDirection = "right"; }
-        if (left == true) { playerTexture = playerDirection[2]; hitDirection = "left"; }
-        if (!left && !right) { playerTexture = playerDirection[0]; hitDirection = ""; }
+        if (right == true) { playerTexture = playerDirection[1]; }
+        if (left == true) { playerTexture = playerDirection[2]; }
+        if (!left && !right) { playerTexture = playerDirection[0]; }
     }
 
 
@@ -100,10 +100,10 @@ public class Main
             playerRect.y -= speedY;
         }
 
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_A) || Raylib.IsKeyDown(KeyboardKey.KEY_LEFT)) { playerRect.x -= speedX; left = true; }
-        if (Raylib.IsKeyReleased(KeyboardKey.KEY_A) || Raylib.IsKeyReleased(KeyboardKey.KEY_LEFT)) left = false;
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_D) || Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT)) { playerRect.x += speedX; right = true; }
-        if (Raylib.IsKeyReleased(KeyboardKey.KEY_D) || Raylib.IsKeyReleased(KeyboardKey.KEY_RIGHT)) right = false;
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_A)) { playerRect.x -= speedX; left = true; }
+        if (Raylib.IsKeyReleased(KeyboardKey.KEY_A)) left = false;
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_D)) { playerRect.x += speedX; right = true; }
+        if (Raylib.IsKeyReleased(KeyboardKey.KEY_D)) right = false;
 
         aniVector.X = playerRect.x;
         aniVector.Y = playerRect.y;
@@ -121,16 +121,14 @@ public class Main
             playerRect.x = 0;
         }
 
-        if (playerRect.x + playerTexture.width / 6 >= Raylib.GetScreenWidth())
+        if (playerRect.x + playerTexture.width / 6 >= Raylib.GetScreenWidth() * 3)
         {
-            playerRect.x = Raylib.GetScreenWidth() - width / 6;
+            playerRect.x = Raylib.GetScreenWidth() * 3 - width / 6;
         }
 
         //X and Y collsion on the game platforms
         foreach (Rectangle floor in platform)
         {
-            Raylib.DrawRectangleRec(floor, Color.BROWN);
-
             collisionY = Raylib.CheckCollisionRecs(playerRect, floor);
             if (collisionY)
             {
@@ -139,6 +137,10 @@ public class Main
                     gravity = 0;
                     playerRect.y = floor.y - playerTexture.height;
                     inAir = false;
+                }
+                else if (playerRect.y > floor.y - floor.height)
+                {
+                    playerRect.y += speedY;
                 }
             }
 
@@ -150,9 +152,7 @@ public class Main
             }
         }
 
-
-
-        if (Raylib.CheckCollisionRecs(playerRect, enemyRect))
+        if (Raylib.CheckCollisionRecs(playerRect, MainEnemy.enemyRect))
         {
             int lostWidth = 17;
             if (Raylib.GetTime() - damageImmune >= 1)
@@ -173,17 +173,45 @@ public class Main
         {
             playerTexture = playerAction[2];
             playerRect.x = 0;
+            gravity = speedY;
             Raylib.DrawText("YOU DIED!", 300, 400, 50, Color.RED);
         }
     }
 
-
-    public void Attack()
+    public void Attack(Rectangle enemyRect)
     {
-        if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER))
+        Raylib.DrawText("" + enemyHp, (int)enemyRect.x + 15, (int)enemyRect.y - 30, 20, Color.WHITE);
+
+
+        if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
         {
-            if (hitDirection == "right" || hitDirection == "") playerTexture = playerAction[0];
-            else if (hitDirection == "left") playerTexture = playerAction[1];
+            playerTexture = playerAction[0];
+
+            bullet.x = playerRect.x + 50;
+            bullet.y = playerRect.y + 30;
+            Raylib.DrawRectangleRec(bullet, Color.WHITE);
+        }
+        else if (Raylib.IsKeyDown(KeyboardKey.KEY_LEFT))
+        {
+            playerTexture = playerAction[1];
+
+            bullet.x = playerRect.x - 40;
+            bullet.y = playerRect.y + 30;
+            Raylib.DrawRectangleRec(bullet, Color.WHITE);
+        }
+
+        if (Raylib.IsKeyReleased(KeyboardKey.KEY_LEFT)) bullet.x = 1000;
+        if (Raylib.IsKeyReleased(KeyboardKey.KEY_RIGHT)) bullet.x = 1000;
+
+
+
+        if (Raylib.CheckCollisionRecs(bullet, enemyRect))
+        {
+            if (Raylib.GetTime() - damageImmune >= 0.4f)
+            {
+                damageImmune = Raylib.GetTime();
+                enemyHp--;
+            }
         }
     }
 }
