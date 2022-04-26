@@ -16,7 +16,7 @@ public class MainEnemy
     };
 
 
-    public void EnemyMovement(Rectangle playerRect, int gravity, int enemyHp)
+    public void EnemyMovement(Rectangle playerRect, int gravity)
     {
         enemyRect.y += gravity;
 
@@ -27,10 +27,11 @@ public class MainEnemy
 
         if (enemyRect.x >= playerRect.x) { enemyRect.x -= 2; enemyTexture = enemyRotation[0]; }
         else if (enemyRect.x <= playerRect.x) { enemyRect.x += 2; enemyTexture = enemyRotation[1]; }
+    }
 
-        if (enemyHp <= 0)
-        {
-            enemyRect.x = 1000;
-        }
+    public void EnemyAlive(int enemyHp)
+    {
+        if (enemyHp <= 0) Main.enemyActive = false;
+        else Raylib.DrawTexture(enemyTexture, (int)enemyRect.x, (int)enemyRect.y, Color.WHITE);
     }
 }

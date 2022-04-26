@@ -15,7 +15,7 @@ MainEnemy enemy = new MainEnemy();
 Camera2D camera = new Camera2D()
 {
     target = new Vector2(),
-    offset = new Vector2(Raylib.GetScreenWidth() / 2, 730),
+    offset = new Vector2(Raylib.GetScreenWidth() / 3, Raylib.GetScreenHeight() / 1.5f),
     rotation = 0.0f,
     zoom = 1.0f,
 };
@@ -26,16 +26,17 @@ while (!Raylib.WindowShouldClose())
     camera.target = new Vector2(player.playerRect.x + player.playerRect.width / 2, player.playerRect.y + player.playerRect.height / 2);
 
     Raylib.DrawTexture(backdrop, 0, 0, Color.WHITE);
-    loadObjects();
+    player.UI();
 
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.SKYBLUE);
     Raylib.BeginMode2D(camera);
+    loadObjects();
 
-    Raylib.DrawTexture(enemy.enemyTexture, (int)MainEnemy.enemyRect.x, (int)MainEnemy.enemyRect.y, Color.WHITE);
     Raylib.DrawTextureRec(Main.playerTexture, Main.textureCutter, player.aniVector, Color.WHITE);
 
-    for (int i = -400; i < 3000; i++)
+    Raylib.DrawRectangle(-400, 800, Raylib.GetScreenWidth() * 4 + 400, 400, Color.DARKBROWN);
+    for (int i = -400; i < Raylib.GetScreenWidth() * 4; i += Main.groundTexture.width)
     {
         Raylib.DrawTexture(Main.groundTexture, i, Main.ground, Color.WHITE);
     }
@@ -52,13 +53,13 @@ while (!Raylib.WindowShouldClose())
 void loadObjects()
 {
     player.Anim();
+    enemy.EnemyAlive(player.enemyHp);
 
     player.Movement(Main.playerTexture);
-    enemy.EnemyMovement(player.playerRect, (int)player.gravity, player.enemyHp);
+    enemy.EnemyMovement(player.playerRect, (int)player.gravity);
 
     player.Collision(platform);
 
     player.Attack(MainEnemy.enemyRect);
-    player.UI();
     player.Damage();
 }

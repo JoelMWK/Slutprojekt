@@ -47,6 +47,7 @@ public class Main
     public static int height = playerTexture.height;
     public static int width = playerTexture.width;
 
+    public static bool enemyActive = true;
     bool right = false;
     bool left = false;
 
@@ -116,14 +117,11 @@ public class Main
         bool collisionY = false;
 
         //Wall collision on right and left side
-        if (playerRect.x <= 0)
-        {
-            playerRect.x = 0;
-        }
+        if (playerRect.x <= 0) playerRect.x = 0;
 
-        if (playerRect.x + playerTexture.width / 6 >= Raylib.GetScreenWidth() * 3)
+        if (playerRect.x + playerTexture.width / 6 >= Raylib.GetScreenWidth() * 4)
         {
-            playerRect.x = Raylib.GetScreenWidth() * 3 - width / 6;
+            playerRect.x = Raylib.GetScreenWidth() * 4 - width / 6;
         }
 
         //X and Y collsion on the game platforms
@@ -138,10 +136,7 @@ public class Main
                     playerRect.y = floor.y - playerTexture.height;
                     inAir = false;
                 }
-                else if (playerRect.y > floor.y - floor.height)
-                {
-                    playerRect.y += speedY;
-                }
+                else if (playerRect.y > floor.y - floor.height) playerRect.y += speedY;
             }
 
             collisionX = Raylib.CheckCollisionRecs(playerRect, floor);
@@ -149,10 +144,25 @@ public class Main
             {
                 if (playerRect.x <= floor.x) playerRect.x -= speedX;
                 else if (playerRect.x > floor.x) playerRect.x += speedX;
+
+            }
+
+            if (Raylib.CheckCollisionRecs(MainEnemy.enemyRect, floor) && enemyActive == true)
+            {
+                if (MainEnemy.enemyRect.x <= floor.x)
+                {
+                    MainEnemy.enemyRect.x -= 2;
+                    MainEnemy.enemyRect.y -= 8.2f;
+                }
+                else if (MainEnemy.enemyRect.x > floor.x)
+                {
+                    MainEnemy.enemyRect.x += 2;
+                    MainEnemy.enemyRect.y -= 8.2f;
+                }
             }
         }
 
-        if (Raylib.CheckCollisionRecs(playerRect, MainEnemy.enemyRect))
+        if (Raylib.CheckCollisionRecs(playerRect, MainEnemy.enemyRect) && enemyActive == true)
         {
             int lostWidth = 17;
             if (Raylib.GetTime() - damageImmune >= 1)
@@ -178,10 +188,9 @@ public class Main
         }
     }
 
-    public void Attack(Rectangle enemyRect)
+    public bool Attack(Rectangle enemyRect)
     {
-        Raylib.DrawText("" + enemyHp, (int)enemyRect.x + 15, (int)enemyRect.y - 30, 20, Color.WHITE);
-
+        if (enemyActive) Raylib.DrawText("" + enemyHp, (int)enemyRect.x + 15, (int)enemyRect.y - 30, 20, Color.WHITE);
 
         if (Raylib.IsKeyDown(KeyboardKey.KEY_RIGHT))
         {
@@ -199,10 +208,7 @@ public class Main
             bullet.y = playerRect.y + 30;
             Raylib.DrawRectangleRec(bullet, Color.WHITE);
         }
-
-        if (Raylib.IsKeyReleased(KeyboardKey.KEY_LEFT)) bullet.x = 1000;
-        if (Raylib.IsKeyReleased(KeyboardKey.KEY_RIGHT)) bullet.x = 1000;
-
+        else return false;
 
 
         if (Raylib.CheckCollisionRecs(bullet, enemyRect))
@@ -213,6 +219,7 @@ public class Main
                 enemyHp--;
             }
         }
+        return true;
     }
 }
 
