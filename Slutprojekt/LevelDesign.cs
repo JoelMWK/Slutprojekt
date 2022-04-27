@@ -25,13 +25,13 @@ public class LevelDesign
         int sizeX = 20;
         int coinSize = 30;
 
-        for (int y = 0; y < 8; y++)
+        for (int y = 0; y < level.GetLength(0); y++)
         {
-            for (int x = 0; x < 32; x++)
+            for (int x = 0; x < level.GetLength(1); x++)
             {
                 if (level[y, x] == 1)
                 {
-                    platform.Add(new Rectangle(x * size, y * size, size, sizeY));
+                    platform.Add(new Rectangle(x * size, y * size + 20, size, sizeY));
                 }
                 else if (level[y, x] == 2)
                 {
@@ -39,15 +39,15 @@ public class LevelDesign
                 }
                 else if (level[y, x] == 3)
                 {
-                    platform.Add(new Rectangle(x * size, y * size, size, 80));
-                }
-                else if (level[y, x] == 4)
-                {
                     point.Add(new Rectangle(x * size + coinSize, y * size + coinSize, coinSize, coinSize));
                 }
             }
         }
         return platform;
     }
-
+    public static int[,] checkScore(int[,] level, int score)
+    {
+        if (score >= 14) level[7, 16] = 0;
+        return level;
+    }
 }

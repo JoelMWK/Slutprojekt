@@ -6,7 +6,7 @@ using Raylib_cs;
 
 public class MainEnemy
 {
-    public static Rectangle enemyRect = new Rectangle(1300, 425, 50, 75);
+    public static Rectangle enemyRect = new Rectangle(1300, 445, 50, 75);
     public Texture2D enemyTexture = Raylib.LoadTexture("enemyTextureR.png");
 
     Texture2D[] enemyRotation = {

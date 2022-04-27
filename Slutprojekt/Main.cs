@@ -75,7 +75,7 @@ public class Main
         Raylib.DrawRectangleRec(healthBarRect, Color.GREEN);
         Raylib.DrawRectangleRec(lostHealthRect, Color.RED);
         Raylib.DrawTexture(healthBar, 0, 0, Color.WHITE);
-        Raylib.DrawText("Coins collected:" + score, 10, 70, 20, Color.WHITE);
+        Raylib.DrawText("Score:" + score, Raylib.GetScreenWidth() - 150, 20, 30, Color.WHITE);
     }
 
 
@@ -120,16 +120,16 @@ public class Main
         //Wall collision on right and left side
         if (playerRect.x <= 0) playerRect.x = 0;
 
-        if (playerRect.x + playerTexture.width / 6 >= Raylib.GetScreenWidth() * 4)
+        if (playerRect.x + playerTexture.width / 6 >= Raylib.GetScreenWidth() * 2)
         {
-            playerRect.x = Raylib.GetScreenWidth() * 4 - width / 6;
+            playerRect.x = Raylib.GetScreenWidth() * 2 - width / 6;
         }
 
         //X and Y collsion on the game platforms
         foreach (Rectangle floor in platform)
         {
             collisionY = Raylib.CheckCollisionRecs(playerRect, floor);
-            if (collisionY && playerRect.x >= floor.x - width)
+            if (collisionY)
             {
                 if (playerRect.y + playerTexture.height < floor.y + floor.height)
                 {
