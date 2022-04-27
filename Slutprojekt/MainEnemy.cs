@@ -6,27 +6,22 @@ using Raylib_cs;
 
 public class MainEnemy
 {
-
-    public static Rectangle enemyRect = new Rectangle(600, 680, 50, 75);
-    public Texture2D enemyTexture = Raylib.LoadTexture("enemyTexture.png");
+    public static Rectangle enemyRect = new Rectangle(1300, 425, 50, 75);
+    public Texture2D enemyTexture = Raylib.LoadTexture("enemyTextureR.png");
 
     Texture2D[] enemyRotation = {
     Raylib.LoadTexture("enemyTexture.png"),
     Raylib.LoadTexture("enemyTextureR.png")
     };
 
+    int speedEnemy = 2;
 
-    public void EnemyMovement(Rectangle playerRect, int gravity)
+    public void EnemyMovement(Rectangle playerRect, int gravity, List<Rectangle> platform)
     {
-        enemyRect.y += gravity;
+        enemyRect.x += speedEnemy;
 
-        if (enemyRect.y + Main.height >= Main.ground)
-        {
-            enemyRect.y = Main.ground - Main.height;
-        }
-
-        if (enemyRect.x >= playerRect.x) { enemyRect.x -= 2; enemyTexture = enemyRotation[0]; }
-        else if (enemyRect.x <= playerRect.x) { enemyRect.x += 2; enemyTexture = enemyRotation[1]; }
+        if (enemyRect.x <= 1100) { speedEnemy = 2; enemyTexture = enemyRotation[1]; }
+        else if (enemyRect.x >= 1550) { speedEnemy = -2; enemyTexture = enemyRotation[0]; }
     }
 
     public void EnemyAlive(int enemyHp)

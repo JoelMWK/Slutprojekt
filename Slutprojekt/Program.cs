@@ -8,7 +8,8 @@ Raylib.InitWindow(800, 800, "Slutprojekt");
 Raylib.SetTargetFPS(60);
 
 Texture2D backdrop = Raylib.LoadTexture("ShrekSwamp.png");
-List<Rectangle> platform = LevelDesign.Levels();
+List<Rectangle> point = new List<Rectangle>();
+List<Rectangle> platform = LevelDesign.Levels(point);
 Main player = new Main();
 MainEnemy enemy = new MainEnemy();
 
@@ -20,13 +21,14 @@ Camera2D camera = new Camera2D()
     zoom = 1.0f,
 };
 
+Rectangle pointRect = new Rectangle();
+int score = 0;
 
 while (!Raylib.WindowShouldClose())
 {
     camera.target = new Vector2(player.playerRect.x + player.playerRect.width / 2, player.playerRect.y + player.playerRect.height / 2);
 
     Raylib.DrawTexture(backdrop, 0, 0, Color.WHITE);
-    player.UI();
 
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.SKYBLUE);
@@ -42,10 +44,22 @@ while (!Raylib.WindowShouldClose())
     }
     foreach (Rectangle floor in platform)
     {
-        Raylib.DrawRectangleRec(floor, Color.BROWN);
+        Raylib.DrawRectangleRec(floor, Color.GRAY);
+    }
+
+    for (int i = 0; i < point.Count; i++)
+    {
+        pointRect = point[i];
+        Raylib.DrawRectangleRec(pointRect, Color.YELLOW);
+        if (Raylib.CheckCollisionRecs(player.playerRect, pointRect))
+        {
+            point.RemoveAt(i);
+            score++;
+        }
     }
 
     Raylib.EndMode2D();
+    player.UI(score);
     Raylib.EndDrawing();
 }
 
@@ -56,7 +70,7 @@ void loadObjects()
     enemy.EnemyAlive(player.enemyHp);
 
     player.Movement(Main.playerTexture);
-    enemy.EnemyMovement(player.playerRect, (int)player.gravity);
+    enemy.EnemyMovement(player.playerRect, (int)player.gravity, platform);
 
     player.Collision(platform);
 

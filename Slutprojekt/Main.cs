@@ -32,10 +32,10 @@ public class Main
     Raylib.LoadTexture("dead.png")
     };
 
-    public static int ground = Raylib.GetScreenHeight() - groundTexture.height;
+    public static int ground = 800;
     bool inAir = false;
     public float gravity = 0;
-    float speedY = 8.2f;
+    float speedY = 11.2f;
     float speedX = 4.2f;
     int hp = 10;
     public int enemyHp = 10;
@@ -70,11 +70,12 @@ public class Main
     }
 
 
-    public void UI()
+    public void UI(int score)
     {
         Raylib.DrawRectangleRec(healthBarRect, Color.GREEN);
         Raylib.DrawRectangleRec(lostHealthRect, Color.RED);
         Raylib.DrawTexture(healthBar, 0, 0, Color.WHITE);
+        Raylib.DrawText("Coins collected:" + score, 10, 70, 20, Color.WHITE);
     }
 
 
@@ -128,12 +129,12 @@ public class Main
         foreach (Rectangle floor in platform)
         {
             collisionY = Raylib.CheckCollisionRecs(playerRect, floor);
-            if (collisionY)
+            if (collisionY && playerRect.x >= floor.x - width)
             {
                 if (playerRect.y + playerTexture.height < floor.y + floor.height)
                 {
                     gravity = 0;
-                    playerRect.y = floor.y - playerTexture.height;
+                    playerRect.y = floor.y - height;
                     inAir = false;
                 }
                 else if (playerRect.y > floor.y - floor.height) playerRect.y += speedY;
@@ -145,20 +146,6 @@ public class Main
                 if (playerRect.x <= floor.x) playerRect.x -= speedX;
                 else if (playerRect.x > floor.x) playerRect.x += speedX;
 
-            }
-
-            if (Raylib.CheckCollisionRecs(MainEnemy.enemyRect, floor) && enemyActive == true)
-            {
-                if (MainEnemy.enemyRect.x <= floor.x)
-                {
-                    MainEnemy.enemyRect.x -= 2;
-                    MainEnemy.enemyRect.y -= 8.2f;
-                }
-                else if (MainEnemy.enemyRect.x > floor.x)
-                {
-                    MainEnemy.enemyRect.x += 2;
-                    MainEnemy.enemyRect.y -= 8.2f;
-                }
             }
         }
 
