@@ -152,7 +152,7 @@ public class Main
         if (Raylib.CheckCollisionRecs(playerRect, MainEnemy.enemyRect) && enemyActive == true)
         {
             int lostWidth = 17;
-            if (Raylib.GetTime() - damageImmune >= 1)
+            if (Raylib.GetTime() - damageImmune >= 0.3f)
             {
                 damageImmune = Raylib.GetTime();
                 hp--;
@@ -200,7 +200,7 @@ public class Main
 
         if (Raylib.CheckCollisionRecs(bullet, enemyRect))
         {
-            if (Raylib.GetTime() - damageImmune >= 0.4f)
+            if (Raylib.GetTime() - damageImmune >= 0.8f)
             {
                 damageImmune = Raylib.GetTime();
                 enemyHp--;

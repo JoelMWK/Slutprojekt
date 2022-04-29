@@ -9,7 +9,6 @@ Raylib.SetTargetFPS(60);
 
 Texture2D backdrop = Raylib.LoadTexture("ShrekSwamp.png");
 Rectangle pointRect = new Rectangle();
-int score = 0;
 List<Rectangle> point = new List<Rectangle>();
 List<Rectangle> platform = LevelDesign.Levels(point);
 Main player = new Main();
@@ -22,6 +21,8 @@ Camera2D camera = new Camera2D()
     rotation = 0.0f,
     zoom = 1.0f,
 };
+
+int score = 0;
 
 while (!Raylib.WindowShouldClose())
 {
@@ -56,8 +57,15 @@ while (!Raylib.WindowShouldClose())
         }
     }
 
+
     Raylib.EndMode2D();
     player.UI(score);
+
+    if (!Main.enemyActive && score == 14)
+    {
+        Raylib.DrawText("YOU WON!", 250, 400, 70, Color.GOLD);
+    }
+
     Raylib.EndDrawing();
 }
 
