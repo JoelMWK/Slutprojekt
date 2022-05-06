@@ -5,7 +5,34 @@ using System.Numerics;
 
 public class LevelDesign
 {
-    public static int[,] level = new int[8, 16]{
+    public static int[,] level = new int[8, 16];
+    public static int levelSwitch = 1;
+    public static List<Rectangle> Levels(List<Rectangle> point, List<Rectangle> key)
+    {
+        List<Rectangle> platform = new List<Rectangle>();
+
+        int size = 100;
+        int sizeY = 80;
+        int sizeX = 20;
+        int coinSize = 30;
+
+        switch (levelSwitch)
+        {
+            case 1:
+                level = new int[8, 16]{
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,3,0,0,4,0,0,0,0,0},
+        {0,0,0,0,0,0,3,0,1,1,1,1,0,0,0,0},
+        {0,0,0,3,3,0,0,0,0,0,0,0,0,3,3,3},
+        };
+                break;
+
+            case 2:
+                level = new int[8, 16]{
         {0,0,0,0,0,0,0,2,3,3,2,0,0,0,0,0},
         {0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0},
         {0,0,3,0,2,0,0,0,0,0,0,0,0,0,0,0},
@@ -15,15 +42,8 @@ public class LevelDesign
         {1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0},
         {0,0,0,0,0,3,3,3,0,1,0,0,3,3,3,3},
         };
-    public static List<Rectangle> Levels(List<Rectangle> point)
-    {
-        List<Rectangle> platform = new List<Rectangle>();
-
-
-        int size = 100;
-        int sizeY = 80;
-        int sizeX = 20;
-        int coinSize = 30;
+                break;
+        }
 
         for (int y = 0; y < level.GetLength(0); y++)
         {
@@ -41,13 +61,12 @@ public class LevelDesign
                 {
                     point.Add(new Rectangle(x * size + coinSize, y * size + coinSize, coinSize, coinSize));
                 }
+                else if (level[y, x] == 4)
+                {
+                    key.Add(new Rectangle(x * size + coinSize, y * size + coinSize, coinSize, coinSize));
+                }
             }
         }
         return platform;
-    }
-    public static int[,] checkScore(int[,] level, int score)
-    {
-        if (score >= 14) level[7, 16] = 0;
-        return level;
     }
 }

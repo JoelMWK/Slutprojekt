@@ -131,13 +131,16 @@ public class Main
             collisionY = Raylib.CheckCollisionRecs(playerRect, floor);
             if (collisionY)
             {
-                if (playerRect.y + playerTexture.height < floor.y + floor.height)
+                if (playerRect.y + playerTexture.height <= floor.y + floor.height)
                 {
                     gravity = 0;
                     playerRect.y = floor.y - height;
                     inAir = false;
                 }
-                else if (playerRect.y > floor.y - floor.height) playerRect.y += speedY;
+                else if (playerRect.y > floor.y - floor.height)
+                {
+                    playerRect.y += speedY;
+                }
             }
 
             collisionX = Raylib.CheckCollisionRecs(playerRect, floor);
@@ -145,7 +148,6 @@ public class Main
             {
                 if (playerRect.x <= floor.x) playerRect.x -= speedX;
                 else if (playerRect.x > floor.x) playerRect.x += speedX;
-
             }
         }
 

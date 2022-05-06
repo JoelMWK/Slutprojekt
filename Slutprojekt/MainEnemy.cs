@@ -26,7 +26,10 @@ public class MainEnemy
 
     public void EnemyAlive(int enemyHp)
     {
+        if (LevelDesign.levelSwitch != 2) Main.enemyActive = false;
+        else if (LevelDesign.levelSwitch == 2) Main.enemyActive = true;
+
         if (enemyHp <= 0) Main.enemyActive = false;
-        else Raylib.DrawTexture(enemyTexture, (int)enemyRect.x, (int)enemyRect.y, Color.WHITE);
+        else if (Main.enemyActive) Raylib.DrawTexture(enemyTexture, (int)enemyRect.x, (int)enemyRect.y, Color.WHITE);
     }
 }
