@@ -96,7 +96,7 @@ while (!Raylib.WindowShouldClose())
         //dessa är utanför camera eftersom jag vill att det ska ha samma position hela tiden
         //och inte flyttas med kameran
         player.UI(score);
-        if (!Main.enemyActive && score >= 14)
+        if (!Main.enemyActive && point.Count == 0) //vad som händer när man dödat enemy och tagit alla poäng
         {
             Raylib.DrawText("YOU WON!", 400, 400, 50, Color.BLACK);
         }
